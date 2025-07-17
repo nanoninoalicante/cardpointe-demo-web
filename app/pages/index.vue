@@ -27,10 +27,16 @@
         <h2 class="text-4xl font-bold text-gray-900 mb-4">
           Secure Payment Processing
         </h2>
-        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
           Experience CardPointe's hosted iframe tokenizer for secure,
           PCI-compliant payment processing
         </p>
+        <NuxtLink
+          to="/cardpointe"
+          class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200"
+        >
+          Try CardPointe Demo
+        </NuxtLink>
       </div>
 
 

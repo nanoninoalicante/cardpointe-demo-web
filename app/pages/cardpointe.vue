@@ -554,6 +554,7 @@
               </h4>
               <div class="text-sm text-green-800">
                 <p><strong>Token:</strong> {{ token }}</p>
+                <p><strong>Expiry:</strong> {{ expiry }}</p>
                 <p class="mt-1 text-green-600">
                   This token can now be used for secure payment processing
                 </p>
@@ -678,7 +679,7 @@ const showConfig = ref(false);
 // CardPointe iframe configuration
 const cardPointeConfig = ref({
   // Base URL for the iframe tokenizer
-  baseUrl: "https://fts-uat.cardconnect.com/itoke/ajax-tokenizer.html",
+  baseUrl: "https://isv-uat.cardconnect.com/itoke/ajax-tokenizer.html",
 
   // Basic options
   useexpiry: true, // Collect expiration date
@@ -690,7 +691,7 @@ const cardPointeConfig = ref({
   cardnumbernumericonly: false, // If true, the card number input field ignores non-numeric values
 
   // Input Formatting
-  formatinput: false, // Styles card number to be separated every four numbers
+  formatinput: true, // Styles card number to be separated every four numbers
   maskfirsttwo: false, // If true, the first 2 digits of the card number are masked
 
   // Input Labels
@@ -727,8 +728,8 @@ const cardPointeConfig = ref({
      labelColor: "#1f2937", // Darker label color for better hierarchy
      labelFontSize: "14px", // Slightly larger labels
      labelFontWeight: "600", // Semi-bold for better readability
-     labelMarginTop: "10px", // No top margin for cleaner look
-     labelMarginBottom: "0px", // Consistent spacing below labels
+     labelMarginTop: "8px", // No top margin for cleaner look
+     labelMarginBottom: "6px", // Consistent spacing below labels
 
      // Error styling
      errorColor: "#dc2626", // Modern red error color
@@ -750,7 +751,7 @@ const cardPointeConfig = ref({
    },
 
   // Response Options
-  enhancedresponse: false, // If true, includes additional parameters in JSON response (token, errorCode, errorMessage)
+  enhancedresponse: true, // If true, includes additional parameters in JSON response (token, errorCode, errorMessage)
 
   // Mobile Options
   fullmobilekeyboard: false, // Displays full alphanumeric keyboard in mobile browsers (for ACH input)
@@ -761,10 +762,10 @@ const cardPointeConfig = ref({
 
   // Event Options
   sendcardtypingevent: true, // Send event when user begins entering card number
-  invalidcreditcardevent: false, // Send event when card number is invalid (use instead of invalidinputevent with usecvv/useexpiry)
-  invalidcvvevent: false, // Send event when CVV is invalid (requires usecvv=true)
-  invalidexpiryevent: false, // Send event when expiry is invalid (requires useexpiry=true)
-  invalidinputevent: false, // Send event when card number is invalid (use when only card number required)
+  invalidcreditcardevent: true, // Send event when card number is invalid (use instead of invalidinputevent with usecvv/useexpiry)
+  invalidcvvevent: true, // Send event when CVV is invalid (requires usecvv=true)
+  invalidexpiryevent: true, // Send event when expiry is invalid (requires useexpiry=true)
+  invalidinputevent: true, // Send event when card number is invalid (use when only card number required)
 
   // Layout Options
   orientation: "default", // Controls orientation: default, horizontal, vertical, custom
@@ -903,6 +904,11 @@ const generateCss = () => {
     display: none !important;
   }`;
 
+  // Remove CardPointe's <br> tags to control spacing through CSS
+  css += `br {
+    display: none !important;
+  }`;
+
   css += `body {
     padding: ${styling.containerPadding};
     background-color: ${styling.containerBackground};
@@ -1027,11 +1033,12 @@ const processPayment = async (event) => {
 
 // Message listener for iframe communication
 const handleMessage = (event) => {
-  console.log("handleMessage", event);
   // Ensure message is from CardPointe
-  if (event.origin !== "https://fts-uat.cardconnect.com") {
+  if (event.origin !== "https://isv-uat.cardconnect.com") {
     return;
   }
+
+  console.log("handleMessage", event);
 
   try {
     // Parse the JSON string from the iframe
@@ -1055,7 +1062,7 @@ const handleMessage = (event) => {
       if (expiryInput && data.expiry) {
         expiryInput.value = data.expiry;
       }
-
+      error.value = "";
       console.log("Token received:", data[tokenPropName]);
       console.log("Expiry received:", data.expiry);
     }
