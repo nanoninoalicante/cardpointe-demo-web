@@ -502,6 +502,62 @@
               </div>
             </div>
 
+            <div class="bg-gray-50 rounded-lg p-6">
+              <h4 class="font-semibold text-gray-900 mb-4">Customer Payment Information</h4>
+              
+              <!-- Card Holder Name -->
+              <div class="mb-4">
+                <label for="cardHolderName" class="block text-sm font-medium text-gray-700 mb-2">
+                  Card Holder Name
+                </label>
+                <input
+                  id="cardHolderName"
+                  v-model="cardHolderName"
+                  type="text"
+                  name="cardHolderName"
+                  class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-colors"
+                  placeholder="Enter full name as shown on card"
+                  required
+                />
+              </div>
+
+              <!-- Street Number and Zip Code -->
+              <div class="grid grid-cols-3 gap-4 mb-4">
+                <!-- Street Number -->
+                                  <div class="col-span-2">
+                    <label for="streetNumber" class="block text-sm font-medium text-gray-700 mb-2">
+                      Street Address and Number
+                    </label>
+                  <input
+                    id="streetNumber"
+                    v-model="streetNumber"
+                    type="text"
+                    name="streetNumber"
+                    class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-colors"
+                    placeholder="Enter street address"
+                    required
+                  />
+                </div>
+
+                <!-- Zip Code -->
+                <div class="col-span-1">
+                  <label for="zipCode" class="block text-sm font-medium text-gray-700 mb-2">
+                    Zip Code
+                  </label>
+                  <input
+                    id="zipCode"
+                    v-model="zipCode"
+                    type="text"
+                    name="zipCode"
+                    class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-colors"
+                    placeholder="12345"
+                    pattern="[0-9]{5}(-[0-9]{4})?"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
             <!-- CardPointe Hosted iFrame -->
             <div class="space-y-4">
               <label class="block text-sm font-medium text-gray-700">
@@ -516,7 +572,7 @@
                   id="tokenFrame"
                   name="tokenFrame"
                   width="100%"
-                  height="400"
+                  height="350"
                   frameborder="0"
                   class="rounded-lg border border-gray-200"
                   @load="onIframeLoad"
@@ -675,11 +731,14 @@ const expiry = ref("");
 const error = ref("");
 const cardPointeIframe = ref(null);
 const showConfig = ref(false);
+const cardHolderName = ref("");
+const streetNumber = ref("");
+const zipCode = ref("");
 
 // CardPointe iframe configuration
 const cardPointeConfig = ref({
   // Base URL for the iframe tokenizer
-  baseUrl: "https://isv-uat.cardconnect.com/itoke/ajax-tokenizer.html",
+  baseUrl: "https://boltgw-uat.cardconnect.com/itoke/ajax-tokenizer.html",
 
   // Basic options
   useexpiry: true, // Collect expiration date
@@ -1034,7 +1093,7 @@ const processPayment = async (event) => {
 // Message listener for iframe communication
 const handleMessage = (event) => {
   // Ensure message is from CardPointe
-  if (event.origin !== "https://isv-uat.cardconnect.com") {
+  if (event.origin !== "https://boltgw-uat.cardconnect.com") {
     return;
   }
 
